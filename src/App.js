@@ -1,24 +1,36 @@
-import logo from "./logo.svg";
+import { useState } from 'react'
+import Container from 'react-bootstrap/Container'
+import OrderEntry from './pages/entry/orderEntry'
+import OrderSummary from './pages/summary'
+import OrderConfirmation from './pages/confirmation/order-confirmation'
 
-function App() {
+import { OrderDetailsProvider } from './contexts/order-details'
+
+const App = () => {
+  const [orderPhase, setOrderPhase] = useState('inProgress')
+
+  let Component = OrderEntry
+  switch (orderPhase) {
+    case 'inProgress':
+      Component = OrderEntry
+      break
+    case 'review':
+      Component = OrderSummary
+      break
+    case 'completed':
+      Component = OrderConfirmation
+      break
+    default:
+  }
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <OrderDetailsProvider>
+      {/* Summary page and entry page need provider */}
+      <Container>
+        <Component setOrderPhase={setOrderPhase} />
+      </Container>
+      {/* confirmation page does not need provider */}
+    </OrderDetailsProvider>
+  )
 }
 
-export default App;
+export default App
